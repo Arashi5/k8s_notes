@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="0152c513-14ab-45b8-a2fc-e8850ce107bd" name="kuber">
+        <fileTransfer rootFolder="/root" accessType="SFTP" host="192.168.1.14" port="22" sshConfigId="8299e2f7-19af-4df9-a6b4-b05199185648" sshConfig="root@192.168.1.14:22 agent" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

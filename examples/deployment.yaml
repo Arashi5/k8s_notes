@@ -1,0 +1,22 @@
+apiVersion: apps/v1 # версия deployment
+kind: Deployment
+metadata:
+  name: nginx-dep # название deployment
+  labels:
+    app: nginx # необходим для связи pod с deployment и сервис
+# спецификация
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx # необходим для связи pod с deployment
+  template:
+    metadata:
+      labels:
+        app: nginx # необходим для связи pod с сервисом
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 8080 # связан с targetPort в сервисе

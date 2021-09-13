@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: Node
+metadata:
+  annotations:
+    flannel.alpha.coreos.com/backend-data: '{"VNI":1,"VtepMAC":"a6:91:89:2c:53:0c"}'
+    flannel.alpha.coreos.com/backend-type: vxlan
+    flannel.alpha.coreos.com/kube-subnet-manager: "true"
+    flannel.alpha.coreos.com/public-ip: 192.168.1.14
+    kubeadm.alpha.kubernetes.io/cri-socket: /var/run/dockershim.sock
+    node.alpha.kubernetes.io/ttl: "0"
+    volumes.kubernetes.io/controller-managed-attach-detach: "true"
+  creationTimestamp: "2021-09-09T14:36:28Z"
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/os: linux
+    kubernetes.io/arch: amd64
+    kubernetes.io/hostname: dev-kubernetes.localdomain
+    kubernetes.io/os: linux
+    node-role.kubernetes.io/master: ""
+  name: dev-kubernetes.localdomain
+  resourceVersion: "718954"
+  selfLink: /api/v1/nodes/dev-kubernetes.localdomain
+  uid: f4c89c6d-9d80-45f7-bfdb-25b1d06d1663
+spec:
+  podCIDR: 192.168.0.0/24
+  podCIDRs:
+  - 192.168.0.0/24
+status:
+  addresses:
+  - address: 192.168.1.14
+    type: InternalIP
+  - address: dev-kubernetes.localdomain
+    type: Hostname
+  allocatable:
+    cpu: "4"
+    ephemeral-storage: "18902281390"
+    hugepages-2Mi: "0"
+    memory: 7852360Ki
+    pods: "110"
+  capacity:
+    cpu: "4"
+    ephemeral-storage: 20510288Ki
+    hugepages-2Mi: "0"
+    memory: 7954760Ki
+    pods: "110"
+  conditions:
+  - lastHeartbeatTime: "2021-09-10T07:03:03Z"
+    lastTransitionTime: "2021-09-10T07:03:03Z"
+    message: Weave pod has set this
+    reason: WeaveIsUp
+    status: "False"
+    type: NetworkUnavailable
+  - lastHeartbeatTime: "2021-09-13T09:41:25Z"
+    lastTransitionTime: "2021-09-09T14:36:28Z"
+    message: kubelet has sufficient memory available
+    reason: KubeletHasSufficientMemory
+    status: "False"
+    type: MemoryPressure
+  - lastHeartbeatTime: "2021-09-13T09:41:25Z"
+    lastTransitionTime: "2021-09-09T14:36:28Z"
+    message: kubelet has no disk pressure
+    reason: KubeletHasNoDiskPressure
+    status: "False"
+    type: DiskPressure
+  - lastHeartbeatTime: "2021-09-13T09:41:25Z"
+    lastTransitionTime: "2021-09-09T14:36:28Z"
+    message: kubelet has sufficient PID available
+    reason: KubeletHasSufficientPID
+    status: "False"
+    type: PIDPressure
+  - lastHeartbeatTime: "2021-09-13T09:41:25Z"
+    lastTransitionTime: "2021-09-09T14:36:52Z"
+    message: kubelet is posting ready status
+    reason: KubeletReady
+    status: "True"
+    type: Ready
+  daemonEndpoints:
+    kubeletEndpoint:
+      Port: 10250
+  images:
+  - names:
+    - k8s.gcr.io/etcd@sha256:4afb99b4690b418ffc2ceb67e1a17376457e441c1f09ab55447f0aaf992fa646
+    - k8s.gcr.io/etcd:3.4.3-0
+    sizeBytes: 288426917
+  - names:
+    - k8s.gcr.io/kube-apiserver@sha256:71344dfb6a804ff6b2c8bf5f72b1f7941ddee1fbff7369836339a79387aa071a
+    - k8s.gcr.io/kube-apiserver:v1.17.17
+    sizeBytes: 171006333
+  - names:
+    - k8s.gcr.io/kube-controller-manager@sha256:9dbe964b3a0d8a4a70b2e16bddb8caf51d7a96d5bf43981ce988909a5f2bf4df
+    - k8s.gcr.io/kube-controller-manager:v1.17.17
+    sizeBytes: 160917885
+  - names:
+    - k8s.gcr.io/kube-proxy@sha256:0129daab4e24ce16a1f07bda844a4483dbddb040f38b678361bf1042f2aaf2b8
+    - k8s.gcr.io/kube-proxy:v1.17.17
+    sizeBytes: 116642093
+  - names:
+    - k8s.gcr.io/kube-scheduler@sha256:1662f271dd9a3d22969728eae30f9d182d74c9c717e4d75673dc94c274ebada5
+    - k8s.gcr.io/kube-scheduler:v1.17.17
+    sizeBytes: 94402941
+  - names:
+    - weaveworks/weave-kube@sha256:d797338e7beb17222e10757b71400d8471bdbd9be13b5da38ce2ebf597fb4e63
+    - weaveworks/weave-kube:2.8.1
+    sizeBytes: 89037656
+  - names:
+    - quay.io/coreos/flannel@sha256:4a330b2f2e74046e493b2edc30d61fdebbdddaaedcb32d62736f25be8d3c64d5
+    - quay.io/coreos/flannel:v0.14.0
+    sizeBytes: 67927607
+  - names:
+    - k8s.gcr.io/coredns@sha256:7ec975f167d815311a7136c32e70735f0d00b73781365df1befd46ed35bd4fe7
+    - k8s.gcr.io/coredns:1.6.5
+    sizeBytes: 41578211
+  - names:
+    - weaveworks/weave-npc@sha256:38d3e30a97a2260558f8deb0fc4c079442f7347f27c86660dbfc8ca91674f14c
+    - weaveworks/weave-npc:2.8.1
+    sizeBytes: 39273789
+  - names:
+    - k8s.gcr.io/pause@sha256:f78411e19d84a252e53bff71a4407a5686c46983a2c2eeed83929b888179acea
+    - k8s.gcr.io/pause:3.1
+    sizeBytes: 742472
+  nodeInfo:
+    architecture: amd64
+    bootID: cd9ffa34-f810-4ec4-a80d-119cffccf514
+    containerRuntimeVersion: docker://20.10.8
+    kernelVersion: 4.18.0-305.el8.x86_64
+    kubeProxyVersion: v1.17.0
+    kubeletVersion: v1.17.0
+    machineID: e977ed5dd06943ee93c637e5839ed138
+    operatingSystem: linux
+    osImage: Oracle Linux Server 8.4
+    systemUUID: e977ed5d-d069-43ee-93c6-37e5839ed138

@@ -1,0 +1,11 @@
+apiVersion: v1 # версия сервиса
+kind: Service # тип компонента
+metadata:
+  name: nginx-serv # имя сервиса
+spec:
+  selector:
+    app: nginx # связывает deployment и pod с service
+  ports: # открываем порты для подов
+    - port: 80
+      targetPort: 8080 # связан с containerPort в deployment
+      protocol: TCP

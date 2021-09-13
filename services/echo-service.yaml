@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service  
+metadata:  
+  name: echo-service 
+spec:  
+  type: NodePort  
+  ports:
+    - name: http
+      nodePort: 31317
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: grpc
+      nodePort: 31318
+      port: 8181
+      targetPort: 8181
+  selector:  
+    app: echo-service
