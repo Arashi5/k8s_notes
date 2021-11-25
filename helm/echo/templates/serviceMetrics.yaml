@@ -1,0 +1,16 @@
+{{- define "service.serviceMetrics.app" -}}
+metadata: 
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-metrics
+  annotations:
+    prometheus.io/port: '{{ .Values.app.metrics.port }}'
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+    - name: http-stmsim-m
+      port: {{ .Values.app.metrics.port }}
+      targetPort: http-stmsim-m
+{{- end -}}
+
+{{- if .Values.app.metrics.enabled -}}
+{{- template "builder.service" (list . "service.serviceMetrics.app") -}}
+{{- end -}}

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.applicationName }}
+  namespace: {{ .Values.applicationName }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.applicationName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.applicationName  }}
+    spec:
+      containers:
+        - name: {{ .Values.applicationName }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+          - containerPort: {{ .Values.app.server.http.port }}
+            name: http
+          - containerPort:  {{ .Values.app.server.grpc.port }}
+            name: grpc
+          {{ if .Values.app.metrics.enabled }}
+          - containerPort:  {{ .Values.app.metrics.port }}
+          {{ end }}
+          env:
+            - name: "GCS_SERVICE_SERVER_HTTP_PORT"
+              value: {{ .Values.app.server.http.port | quote }}
+            - name: "GCS_SERVICE_SERVER_HTTP_TIMEOUT_SEC"
+              value: {{ .Values.app.server.http.timeoutSec | quote }}
+            - name: "GCS_SERVICE_SERVER_GRPC_PORT"
+              value: {{ .Values.app.server.grpc.port  | quote }}
+            - name: "GCS_SERVICE_SERVER_GRPC_TIMEOUT_SEC"
+              value: {{ .Values.app.server.grpc.timeoutSec  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_MASTER_HOST"
+              value: {{ .Values.app.postgresql.master.host  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_MASTER_PORT"
+              value: {{ .Values.app.postgresql.master.port  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_MASTER_USER"
+              value: {{ .Values.app.postgresql.master.user  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_MASTER_PASSWORD"
+              value: {{ .Values.app.postgresql.master.password  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_MASTER_DATABASE_NAME"
+              value: {{ .Values.app.postgresql.master.databaseName  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_MASTER_SECURE"
+              value: {{ .Values.app.postgresql.master.secure  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_REPLICA_HOST"
+              value: {{ .Values.app.postgresql.replica.host  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_REPLICA_PORT"
+              value: {{ .Values.app.postgresql.replica.port  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_REPLICA_USER"
+              value: {{ .Values.app.postgresql.replica.user  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_REPLICA_PASSWORD"
+              value: {{ .Values.app.postgresql.replica.password  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_REPLICA_DATABASE_NAME"
+              value: {{ .Values.app.postgresql.replica.databaseName  | quote }}
+            - name: "GCS_SERVICE_POSTGRES_REPLICA_SECURE"
+              value: {{ .Values.app.postgresql.replica.secure  | quote }}
+            - name: "GCS_SERVICE_SERVICE_LIMITER_ENABLED"
+              value: {{ .Values.app.limiter.enabled  | quote }}
+            - name: "GCS_SERVICE_LIMITER_LIMIT"
+              value: {{ .Values.app.limiter.limit  | quote }}
+            - name: "GCS_SERVICE_METRICS_ENABLED"
+              value: {{ .Values.app.metrics.enabled  | quote }}
+            - name: "GCS_SERVICE_METRICS_PORT"
+              value: {{ .Values.app.metrics.port  | quote }}
+            - name: "GCS_SERVICE_LOGGER_LEVEL"
+              value: {{ .Values.app.logger.level  | quote }}
+            - name: "GCS_SERVICE_LOGGER_TIME_FORMST"
+              value: {{ .Values.app.logger.timeFormat  | quote }}
+      imagePullSecrets:
+        - name: regcred

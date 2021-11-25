@@ -1,0 +1,14 @@
+{{- define "service.service.app" -}}
+spec:
+  ports:
+  - name: http-stmsim
+    port: {{ .Values.service.ports.http }}
+    targetPort: http-stmsim
+  - name: grpc-stmsim
+    port: {{ .Values.service.ports.grpc }}
+    targetPort: grpc-stmsim
+{{- end -}}
+
+{{- if .Values.service.enabled -}}
+{{- template "builder.service" (list . "service.service.app") -}}
+{{- end -}}

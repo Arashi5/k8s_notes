@@ -1,0 +1,21 @@
+stages:
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  CHART_MUSEUM: $K8S_SECRET_CHART_MUSEUM
+  VERSION: 0.1.1
+
+deploy:
+  stage: deploy
+  image: alpine/helm:3.2.1
+  before_script:
+    - apk add --update curl && rm -rf /var/cache/apk/
+    - apk add --update world[git] && rm -rf /var/cache/apk/
+  script:
+    - helm repo add chart $CHART_MUSEUM
+    - helm package .
+    - export VERSION="$(grep "version" Chart.yaml | cut -d " " -f2)"
+    - curl --data-binary "@$CI_PROJECT_NAME-$VERSION.tgz" $CHART_MUSEUM/api/charts
+  only:
+    - master

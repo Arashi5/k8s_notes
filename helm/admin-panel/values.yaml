@@ -1,0 +1,78 @@
+applicationName: gf-admin
+domain: kube.dev.gradefactor.ru
+
+replicaCount: 1
+
+image:
+  repository: registry.repo.services.lenvendo.ru:8443/grade-factor/spa/gf-admin
+  tag: "latest"
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    http: 80
+
+ingress:
+  enabled: false
+
+ingressExternal:
+  enabled: true
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector:
+  selector: worker
+
+affinity: true
+
+tolerations: [ ]
+
+gitLabSecret:
+  enabled: true
+
+tlsSecret:
+  enabled: true
+
+app:
+  envPrefix: admin-panel
+  config: ""
+  ## порты приложения
+  ##
+  server:
+    http:
+      port: 8090
+      timeoutSec: 86400
+  logger:
+    ## уровень логирования. Число от 0 до 5 которое соответсвуют следующим уровням: 0 Panic, 1 Fatal, 2 Error, 3 Warning, 4 Info, 5 Debug (integer)
+    ##
+    level: emerg
+    ## формат времени
+    ##
+    timeFormat: 2006-01-02T15:04:05.999999999
+
+  ## prometheus.yaml metrics
+  ##
+  metrics:
+    ## (true|false) включение/выключение экспортирования метрик
+    ##
+    enabled: true
+    ## порт где работает экспортер метрик
+    ##
+    port: 9154
+
+  ## конфигурация лимитера
+  ##
+  limiter:
+    ## (true|false) включение/выключение лимитера
+    ##
+    enabled: false
+    ## Limit tokens per second
+    ##
+    limit: "10000.0"
+  ## параметры подключения к postgres
+  ##

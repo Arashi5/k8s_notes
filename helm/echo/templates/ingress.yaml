@@ -1,0 +1,50 @@
+{{ define "service.cors" }}
+{{ if .Values.app.cors.enabled }}
+annotations:
+  nginx.ingress.kubernetes.io/enable-cors: 'true'
+  nginx.ingress.kubernetes.io/cors-allow-headers: 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization'
+  nginx.ingress.kubernetes.io/cors-allow-origin: '*'
+  nginx.ingress.kubernetes.io/cors-allow-credentials: 'true'
+  nginx.ingress.kubernetes.io/configuration-snippet: |
+    add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,Authorization';
+    if ($request_method = 'OPTIONS') {
+      return 204;
+    }
+{{- end }}
+{{- end -}}
+
+{{ define "service.annotation" }}
+{{- if .Values.ingress.annotations }}
+annotations:
+{{ include "builder.annote" .Values.ingress.annotations | indent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "service.ingress" -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "builder.fullname" $ }}
+{{ include "builder.util.merge" (append (list . "service.cors") "service.annotation" ) | indent 2 }}
+  labels:
+{{ include "builder.labels.standard" . | indent 4 }}
+spec:
+  rules:
+  {{- range $host := .Values.ingress.hosts }}
+  - host: {{ $host.host }}
+    http:
+      paths:
+      - path: {{ $host.path | default "/" }}
+        backend:
+          serviceName: {{ template "builder.fullname" $ }}
+          servicePort: http-stmsim
+  {{- end }}
+  {{ if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{ end }}
+{{- end -}}
+
+{{ if .Values.ingress.enabled }}
+{{- template "builder.ingress" (list . "service.ingress") -}}
+{{- end -}}

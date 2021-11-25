@@ -1,0 +1,6 @@
+apiVersion: v2
+name: gcs
+description: Grade Competence Service (GCS)
+type: application
+version: 0.1.6
+appVersion: "1.16.0"

@@ -1,0 +1,132 @@
+applicationName: gcs
+domain: kube.dev.gradefactor.ru
+
+replicaCount: 1
+
+image:
+  repository: registry.repo.services.lenvendo.ru:8443/grade-factor/gcs
+  tag: "latest"
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    http: 80
+    grpc: 8081
+
+ingress:
+  enabled: false
+
+ingressExternal:
+  enabled: true
+
+ingressGrpc:
+  enabled: true
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+affinity: true
+
+tolerations: []
+
+gitLabSecret:
+  enabled: true
+
+tlsSecret:
+  enabled: true
+
+app:
+  envPrefix: GCS_SERVICE
+  config: ""
+  ## порты приложения
+  ##
+  server:
+    http:
+      port: 8094
+      timeoutSec: 86400
+    grpc:
+      port: 9094
+      timeoutSec: 86400
+  ## Enable or disable TLS
+  ##
+  grpc:
+    tls:
+      enabled: false
+  logger:
+    ## уровень логирования. Число от 0 до 5 которое соответсвуют следующим уровням: 0 Panic, 1 Fatal, 2 Error, 3 Warning, 4 Info, 5 Debug (integer)
+    ##
+    level: emerg
+    ## формат времени
+    ##
+    timeFormat: 2006-01-02T15:04:05.999999999
+
+    ## конфигурация sentry
+    ##
+#  sentry:
+#    ## (true|false) включение/выключение sentry
+#    ##
+#    enabled: false
+#    ## адрес сервера sentry
+#    ##
+#    dsn: "https://6977a1eaaac54d2dab5d09fd09337912@sentry.eldorado.ru/26"
+#    ## environment
+#    ##
+#    environment: local
+#
+#  tracer:
+#    ## флаг, если указан, то в opentracing будут отправляться трассировки путей запросов (если передан через флаги, то любое значение будет соотвествоать true)
+#    ##
+#    enabled: false
+#    ## хост трасировщика
+#    ##
+#    host: "127.0.0.1"
+#    ## порт трасировщика
+#    ##
+#    port: 5775
+#    ## имя трассировщика
+#    ##
+#    name: ss
+
+  ## prometheus.yaml metrics
+  ##
+  metrics:
+    ## (true|false) включение/выключение экспортирования метрик
+    ##
+    enabled: true
+    ## порт где работает экспортер метрик
+    ##
+    port: 9154
+
+  ## конфигурация лимитера
+  ##
+  limiter:
+    ## (true|false) включение/выключение лимитера
+    ##
+    enabled: false
+    ## Limit tokens per second
+    ##
+    limit: "10000.0"
+  ## параметры подключения к postgres
+  ##
+  postgresql:
+    master:
+      host: 192.168.1.61
+      port: 5432
+      user: gcs
+      password: MjVjODcxNTVlZmJh
+      databaseName: gcs
+      secure: disable
+    replica:
+      host: 192.168.1.61
+      port: 5432
+      user: gcs
+      password: MjVjODcxNTVlZmJh
+      databaseName: gcs
+      secure: disable

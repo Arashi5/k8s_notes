@@ -1,0 +1,31 @@
+{{- define "service.grpc.ingress" -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "builder.fullname" $ }}-grpc
+  labels:
+{{ include "builder.labels.standard" . | indent 4 -}}
+  {{- if .Values.ingressGrpc.annotations }}
+  annotations:
+    {{- include "builder.annote" .Values.ingressGrpc.annotations | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+  {{- range $host := .Values.ingressGrpc.hosts }}
+  - host: {{ $host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "builder.fullname" $ }}
+          servicePort: grpc-stmsim
+  {{- end }}
+  {{ if .Values.ingressGrpc.tls }}
+  tls:
+{{ toYaml .Values.ingressGrpc.tls | indent 4 }}
+  {{ end }}
+{{- end -}}
+
+{{ if .Values.ingressGrpc.enabled -}}
+{{ template "service.grpc.ingress" . -}}
+{{- end }}

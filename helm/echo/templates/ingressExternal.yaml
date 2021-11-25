@@ -1,0 +1,35 @@
+{{ define "service.externalAnnotation" }}
+{{- if .Values.ingressExternal.annotations }}
+annotations:
+{{ include "builder.annote" .Values.ingressExternal.annotations | indent 2 }}
+{{- end }}
+{{ end }}
+
+{{- define "service.ingress.external" -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "builder.fullname" $ }}-ext
+{{ include "builder.util.merge" (append (list . "service.cors") "service.externalAnnotation" ) | indent 2 -}}
+  labels:
+{{ include "builder.labels.standard" . | indent 4 }}
+spec:
+  rules:
+  {{- range $host := .Values.ingressExternal.hosts }}
+  - host: {{ $host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "builder.fullname" $ }}
+          servicePort: http-stmsim
+  {{- end }}
+  {{ if .Values.ingressExternal.tls -}}
+  tls:
+{{ toYaml .Values.ingressExternal.tls | indent 4 }}
+  {{ end -}}
+{{- end -}}
+
+{{ if .Values.ingressExternal.enabled -}}
+{{ template "service.ingress.external" . -}}
+{{- end -}}

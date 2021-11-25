@@ -1,0 +1,58 @@
+
+{{/*http*/}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.applicationName }}-http-service
+  namespace: {{ .Values.applicationName }}
+  labels:
+    app: {{ .Values.applicationName }}-http-service
+spec:
+  ports:
+    - port: {{ .Values.app.server.http.port }}
+      targetPort: {{ .Values.app.server.http.port }}
+      protocol: TCP
+      name: {{ .Values.applicationName }}-http
+  type: NodePort
+  selector:
+    app: {{ .Values.applicationName }}
+
+---
+{{/*grpc*/}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.applicationName }}-grpc-service
+  namespace: {{ .Values.applicationName }}
+  labels:
+    app: {{ .Values.applicationName }}-grpc-service
+spec:
+  ports:
+    - port: {{ .Values.app.server.grpc.port }}
+      targetPort: {{ .Values.app.server.grpc.port }}
+      protocol: TCP
+      name: grpc
+  type: ClusterIP
+  selector:
+    app: {{ .Values.applicationName }}
+
+---
+{{/*metrics*/}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.applicationName }}-metrics
+  namespace: {{ .Values.applicationName }}
+  labels:
+    app: {{ .Values.applicationName }}-metrics
+  annotations:
+    prometheus.io/port: '{{ .Values.app.metrics.port }}'
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+    - name: http-export-m
+      port: {{ .Values.app.metrics.port }}
+      targetPort: http-export-m
+  type: ClusterIP
+  selector:
+    app: {{ .Values.applicationName }}

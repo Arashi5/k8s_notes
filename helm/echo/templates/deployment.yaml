@@ -1,0 +1,110 @@
+{{- template "builder.deployment" (list . "service.deployment.app") -}}
+{{- define "service.deployment.app" -}}
+apiVersion: apps/v1
+metadata:
+  labels:
+    version: {{ .Values.image.tag }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        version: {{ .Values.image.tag }}
+    spec:
+      {{- if .Values.affinity }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ template "builder.name" . }}
+              - key: version
+                operator: In
+                values:
+                - {{ .Values.image.tag }}
+              - key: release
+                operator: In
+                values:
+                - {{ .Release.Name }}
+            topologyKey: kubernetes.io/hostname
+      {{- end }}
+      containers:
+      - {{ template "builder.container" (list . "service.deployment.app.container") }}
+{{- end -}}
+{{- define "service.deployment.app.container" -}}
+name: {{ template "builder.fullname" . }}
+env:
+#config
+{{ template "config.env" . }}
+
+#server
+{{ template "server.env" . }}
+
+#mysql
+{{ template "mysql.env" . }}
+
+#postgres
+{{ template "postgres.env" . }}
+
+#logger
+{{ template "logger.env" . }}
+
+## opentracing
+{{ template "opentracing.env" . }}
+
+## metrics
+{{ template "metrics.env" . }}
+
+## sentry
+{{ template "sentry.env" . }}
+
+## limiter
+{{ template "limiter.env" . }}
+
+## stms
+{{ template "stms.env" . }}
+
+## lms
+{{ template "lms.env" . }}
+
+## kafka
+{{ template "kafka.env" . }}
+
+## pickup
+{{ template "pickup.env" . }}
+
+## s3
+{{ template "s3.env" . }}
+
+
+{{ if .Values.env }}
+{{ range $index, $env := .Values.app.env }}
+- {{ template "builder.envvar.value" (list $index $env) }}
+{{ end }}
+{{ end }}
+ports:
+- containerPort: {{ .Values.app.server.http.port }}
+  name: http-stmsim
+- containerPort: {{ .Values.app.server.grpc.port }}
+  name: grpc-stmsim
+{{ if .Values.app.metrics.enabled }}
+- containerPort: {{ .Values.app.metrics.port }}
+  name: http-stmsim-m
+{{- end }}
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: http-stmsim
+readinessProbe:
+  initialDelaySeconds: 5
+  httpGet:
+    path: /readiness
+    port: http-stmsim
+{{- end -}}
